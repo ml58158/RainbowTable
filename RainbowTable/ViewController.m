@@ -8,7 +8,9 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
+@property NSMutableArray *colors;
+@property IBOutlet UITableView *colorTableView;
 
 @end
 
@@ -16,12 +18,44 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    self.colors = [NSMutableArray arrayWithObjects:
+                   [UIColor redColor],
+                   [UIColor blueColor],
+                   [UIColor orangeColor],
+                   [UIColor yellowColor],
+                   [UIColor colorWithRed:0.294 green:0 blue:0.51 alpha:1],
+                   [UIColor magentaColor],
+                   [UIColor grayColor],
+                   [UIColor purpleColor], nil];
+
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
+-(IBAction)onAddRandomColor:(id)sender {
+    CGFloat red = (float)rand()/RAND_MAX;
+    CGFloat green = (float)rand()/RAND_MAX;
+    CGFloat blue = (float)rand()/RAND_MAX;
+    UIColor *newcolor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
+    [self.colors addObject:newcolor];
+    [self.colorTableView reloadData];
+
 }
+
+
+# pragma mark - UITableViewDataSource
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.colors.count;
+
+    return 100;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ColorCellID"];
+    cell.textLabel.text = [NSString stringWithFormat:@"Row %li", (long)indexPath.row];
+    cell.backgroundColor = [self.colors objectAtIndex:indexPath.row];
+    return cell;
+}
+
 
 @end
